@@ -1,9 +1,22 @@
 # ez.zsh
-# Easy ZSH base configuration to get you a fast, full featured, sane, and modern Z shell
+# EZ - Easy ZSH configuration to start you off with better Z shell defaults
 #
 # http://github.com/mattmc3/ez
 # Copyright mattmc3, 2020-2021
 # MIT license, https://opensource.org/licenses/MIT
+
+### Environment
+#region
+
+# XDG base dirs
+# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-$HOME/.xdg}"
+
+#endregion
+
 ### ZSH Options
 #region
 
@@ -74,39 +87,6 @@ setopt prompt_subst           # expand parameters in prompt variables
 # http://zsh.sourceforge.net/Doc/Release/Options.html#Zle
 setopt no_beep                # be quiet!
 setopt combining_chars        # combine zero-length punctuation characters (accents) with the base character
-
-#endregion
-
-### Environment
-#region
-
-# XDG base dirs
-# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-$HOME/.xdg}"
-
-if [[ "$OSTYPE" == darwin* ]]; then
-  export XDG_DESKTOP_DIR="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
-  export XDG_DOCUMENTS_DIR="${XDG_DOCUMENTS_DIR:-$HOME/Documents}"
-  export XDG_DOWNLOAD_DIR="${XDG_DOWNLOAD_DIR:-$HOME/Downloads}"
-  export XDG_MUSIC_DIR="${XDG_MUSIC_DIR:-$HOME/Music}"
-  export XDG_PICTURES_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
-  export XDG_PUBLICSHARE_DIR="${XDG_PUBLICSHARE_DIR:-$HOME/Public}"
-fi
-
-# General environment variables that everyone needs
-export CLICOLOR="1"
-export LSCOLORS="${LSCOLORS:-ExfxcxdxbxGxDxabagacad}"
-
-export PAGER="${PAGER:-less}"
-export EDITOR="${EDITOR:-vim}"
-export VISUAL="${VISUAL:-$EDITOR}"
-
-if [[ "$OSTYPE" == darwin* ]]; then
-  export BROWSER="${BROWSER:-open}"
-fi
 
 #endregion
 
