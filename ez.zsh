@@ -122,45 +122,66 @@ fi
 
 #endregion
 
-### .zshrc.d
+### Convenience functions
 #region
 
-function source_config_dir() {
-  # source ZSH config files from .zshrc.d
-  local zshrcdir zfile
-  if [[ -n "$1" ]]; then
-    zshrcdir="$1"
-  else
-    zshrcdir="${ZDOTDIR:-$HOME}/.zshrc.d"
-    # no need to hide it with a leading dot in $ZDOTDIR
-    [[ -d "$ZDOTDIR/zshrc.d" ]] && zshrcdir="$ZDOTDIR/zshrc.d"
-  fi
-  if [[ ! -d "zshrcdir" ]]; then
-    echo "zshrc.d dir not found: $zshrcdir" >&2 && return 1
-  fi
-  # source zshrc.d
-  for zfile in "$zshrcdir"/*.{sh,zsh}(.N); do
+function source_confdir() {
+  # source ZSH config files
+  local configdir="$1"
+  [[ -z "$configdir" ]] && echo "expecting config dir argument" >&2 && return 1
+  [[ ! -d "$configdir" ]] && echo "config dir not found: $configdir" >&2 && return 1
+
+  # source configdir
+  local f
+  local files=("$configdir"/*.{sh,zsh}(.N))
+  for f in ${(o)files}; do
     # ignore files that begin with a tilde
-    case $zfile:t in ~*) continue;; esac
-    source "$zfile"
+    case $f:t in ~*) continue;; esac
+    source "$f"
   done
 }
 
-#endregion
+function autoload_funcdir() {
+  ### lazy load functions dir
+  local funcdir="$1"
+  [[ -z "$funcdir" ]] && echo "expecting function dir argument" >&2 && return 1
+  [[ ! -d "$funcdir" ]] && echo "function dir not found: $funcdir" >&2 && return 1
 
-### .zfunctions
-#region
-
-# lazy load zfunctions
-_zfuncdir="${ZDOTDIR:-$HOME}/.zfunctions"
-# no need to hide it with a leading dot in $ZDOTDIR
-[[ -d "$ZDOTDIR"/zfunctions ]] && _zfuncdir="$ZDOTDIR"/zfunctions
-if [[ -d "$_zfuncdir" ]]; then
-  fpath=("$_zfuncdir" $fpath)
-  for _zfunc in "$_zfuncdir"/*(.N); do
-    autoload -Uz "$_zfunc"
+  fpath=("$funcdir" $fpath)
+  local fn
+  for fn in "$funcdir"/*(.N); do
+    autoload -Uz "$fn"
   done
-fi
-unset _zfuncdir _zfunc
+}
+
+# https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh#L31-L44
+# http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Use-of-compinit
+# https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2894219
+# https://htr3n.github.io/2018/07/faster-zsh/
+function run_compinit() {
+  # run compinit in a smarter, faster way
+  setopt localoptions extendedglob
+  ZSH_COMPDUMP=${ZSH_COMPDUMP:-$XDG_CACHE_HOME/zsh/zcompdump}
+  autoload -Uz compinit
+  # Glob magic explained:
+  #   #q expands globs in conditional expressions
+  #   N - sets null_glob option (no error on 0 results)
+  #   mh-20 - modified less than 20 hours ago
+  if [[ $ZSH_COMPDUMP(#qNmh-20) ]]; then
+    # -C (skip function check) implies -i (skip security check).
+    compinit -C -d "$ZSH_COMPDUMP"
+  else
+    mkdir -p "$ZSH_COMPDUMP:h"
+    compinit -i -d "$ZSH_COMPDUMP"
+  fi
+
+  # Compile zcompdump, if modified, in background to increase startup speed.
+  {
+    if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
+      zcompile "$ZSH_COMPDUMP"
+    fi
+  } &!
+}
+run_compinit
 
 #endregion
