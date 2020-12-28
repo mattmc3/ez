@@ -145,7 +145,7 @@ fi
 ### .zshrc.d
 #region
 
-function source_zshrc.d() {
+function source_config_dir() {
   # source ZSH config files from .zshrc.d
   local zshrcdir zfile
   if [[ -n "$1" ]]; then
