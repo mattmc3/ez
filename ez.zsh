@@ -125,7 +125,7 @@ fi
 ### Convenience functions
 #region
 
-function source_confdir() {
+function ez_source_confdir() {
   # source ZSH config files
   local configdir="$1"
   [[ -z "$configdir" ]] && echo "expecting config dir argument" >&2 && return 1
@@ -141,7 +141,7 @@ function source_confdir() {
   done
 }
 
-function autoload_funcdir() {
+function ez_autoload_funcdir() {
   ### lazy load functions dir
   local funcdir="$1"
   [[ -z "$funcdir" ]] && echo "expecting function dir argument" >&2 && return 1
@@ -158,7 +158,7 @@ function autoload_funcdir() {
 # http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Use-of-compinit
 # https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2894219
 # https://htr3n.github.io/2018/07/faster-zsh/
-function run_compinit() {
+function ez_run_compinit() {
   # run compinit in a smarter, faster way
   setopt localoptions extendedglob
   ZSH_COMPDUMP=${ZSH_COMPDUMP:-$XDG_CACHE_HOME/zsh/zcompdump}
@@ -182,6 +182,5 @@ function run_compinit() {
     fi
   } &!
 }
-run_compinit
 
 #endregion

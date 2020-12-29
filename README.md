@@ -13,11 +13,40 @@ EZ gives you:
 
 ## Functions
 
-| Function         | Args        | Description                                             |
-|:-----------------|:------------|:--------------------------------------------------------|
-| autoload_funcdir | \<funcdir\> | create autoload functions from the files in a directory |
-| run_compinit     |             | run compinit in a smarter, faster way                   |
-| source_confdir   | \<confdir\> | source all *.zsh/*.sh files in a directory              |
+| Function            | Args        | Description                                             |
+|:--------------------|:------------|:--------------------------------------------------------|
+| ez_autoload_funcdir | \<funcdir\> | create autoload functions from the files in a directory |
+| ez_run_compinit     |             | run compinit in a smarter, faster way                   |
+| ez_source_confdir   | \<confdir\> | source all *.zsh/*.sh files in a directory              |
+
+## .zshrc
+
+If you want a nice starter .zshrc, you might to something like this:
+
+```shell
+# setup pz as our plugin manager
+PZ_PLUGINS_DIR="${ZDOTDIR:-$HOME/.config/zsh}/plugins"
+[[ -d $PZ_PLUGINS_DIR/pz ]] ||
+  git clone --depth=1 https://github.com/mattmc3/pz.git $PZ_PLUGINS_DIR/pz
+source $PZ_PLUGINS_DIR/pz/pz.zsh
+
+# setup a nice prompt
+pz prompt sindresorhus/pure
+
+# install EZ and some plugins
+pz source mattmc3/ez
+pz source zsh-users/zsh-autosuggestions
+pz source zsh-users/zsh-completions
+pz source zsh-users/zsh-history-substring-search
+
+# run our EZ functions
+ez_autoload_funcdir $ZDOTDIR/zfunctions
+ez_source_confdir $ZDOTDIR/zshrc.d
+ez_run_compinit
+
+# add syntax highlighting at the very end
+pz source zdharma/fast-syntax-highlighting
+```
 
 ## Installation
 
