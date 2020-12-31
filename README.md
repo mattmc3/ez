@@ -21,7 +21,7 @@ EZ gives you:
 
 ## .zshrc
 
-If you want a nice starter .zshrc, you might to something like this:
+If you want a nice starter .zshrc, you could start with something like this:
 
 ```shell
 # setup pz as our plugin manager
