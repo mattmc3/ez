@@ -19,43 +19,79 @@ EZ gives you:
 | ez_run_compinit     |             | run compinit in a smarter, faster way                   |
 | ez_source_confdir   | \<confdir\> | source all *.zsh/*.sh files in a directory              |
 
-## .zshrc
+## Usage
 
 If you want a nice starter .zshrc, you could start with something like this:
 
 ```shell
-# setup pz as our plugin manager
-PZ_PLUGINS_DIR="${ZDOTDIR:-$HOME/.config/zsh}/plugins"
-[[ -d $PZ_PLUGINS_DIR/pz ]] ||
-  git clone --depth=1 https://github.com/mattmc3/pz.git $PZ_PLUGINS_DIR/pz
-source $PZ_PLUGINS_DIR/pz/pz.zsh
+# grab EZ if we don't already have it
+PLUGINS_DIR="${ZDOTDIR:-$HOME/.config/zsh}"/plugins
+[[ -d $PLUGINS_DIR/ez ]] ||
+  git clone --depth=1 https://github.com/mattmc3/ez.git $PLUGINS_DIR/ez
 
-# setup a nice prompt
-pz prompt sindresorhus/pure
+# source EZ to set better ZSH defaults
+source $PLUGINS_DIR/ez/ez.zsh
 
-# install EZ and some plugins
-pz source mattmc3/ez
-pz source zsh-users/zsh-autosuggestions
-pz source zsh-users/zsh-completions
-pz source zsh-users/zsh-history-substring-search
+# use oh-my-zsh or a plugin manager or your own custom config
+# ... do stuff ...
 
-# run our EZ functions
-ez_autoload_funcdir $ZDOTDIR/zfunctions
-ez_source_confdir $ZDOTDIR/zshrc.d
+# run our EZ functions if we want this added functionality
+ez_autoload_funcdir "${ZDOTDIR:-$HOME/.config/zsh}"/zfunctions
+ez_source_confdir "${ZDOTDIR:-$HOME/.config/zsh}"/zshrc.d
 ez_run_compinit
-
-# add syntax highlighting at the very end
-pz source zdharma/fast-syntax-highlighting
 ```
 
 ## Installation
+
+### Install with a plugin manager
+
+Installing with a plugin manager is the recommended method so that you can get updates.
 
 - [pz]: `pz source mattmc3/ez`
 - [znap]: `znap source mattmc3/ez`
 - [antibody]: `antibody bundle mattmc3/ez`
 - [antigen]: `antigen bundle mattmc3/ez`
 - [zgen]: `zgen load mattmc3/ez`
-- [ohmyzsh]: `git clone https://github.com/mattmc3/ez ${ZSH_CUSTOM:-$ZSH/custom}/plugins/pz`
+
+### Install manually
+
+With git:
+
+```shell
+git clone --depth=1 https://github.com/mattmc3/ez.git "${ZDOTDIR:-$HOME/.config/zsh}"/plugins
+```
+
+-OR- with a single file download:
+
+```shell
+mkdir -p "${ZDOTDIR:-$HOME}"/plugins/ez
+curl -fsSL https://raw.githubusercontent.com/mattmc3/ez/main/ez.zsh -o "${ZDOTDIR:-$HOME}"/plugins/ez/ez.zsh
+```
+
+Then source the file in your .zshrc:
+
+```shell
+. "${ZDOTDIR:-$HOME}"/plugins/ez/ez.zsh
+```
+
+### Insall with a framework
+
+Using [oh-my-zsh][ohmyzsh]:
+
+1. Add the EZ plugin to your OMZ custom path
+
+    ```shell
+    git clone https://github.com/mattmc3/ez ${ZSH_CUSTOM:-$ZSH/custom}/plugins/ez
+    ```
+
+1. Add EZ to your `plugins` list in your OMZ.
+
+    ```shell
+    plugins=(
+        ...
+        ez
+    )
+    ```
 
 [antigen]: https://github.com/zsh-users/antigen
 [antibody]: https://getantibody.github.io
